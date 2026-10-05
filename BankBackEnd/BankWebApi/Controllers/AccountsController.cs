@@ -48,7 +48,7 @@ namespace BankWebApi.Controllers
             if(status == true)
                 return Ok("Account Added successfully");
             else
-                return Ok("This Account Type Already exist");
+                return BadRequest("This Account Type Already exist");
         }
     }
 }

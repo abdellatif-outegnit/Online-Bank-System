@@ -8,6 +8,6 @@ namespace BankDataAccess
 {
     static public class SettingsData
     {
-        static public string ConnectionString { get { return $"Server=.;Database={SecureInfo.DBname};User Id={SecureInfo.DBuser};Password={SecureInfo.DBpassword};Encrypt=True;TrustServerCertificate=True;"; } }
+        static public string ConnectionString { get { return Environment.GetEnvironmentVariable("DB_CONNECTION_STRING"); } }
     }
 }
