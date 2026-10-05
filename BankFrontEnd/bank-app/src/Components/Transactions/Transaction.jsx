@@ -3,8 +3,9 @@ import { useState, useEffect } from "react";
 import MyCustomSelect from "../CustomSelect/MyCustomSelect.jsx";
 import { apiFetch } from "../../utils/functions/ApiFunction";
 import { useTranslation } from 'react-i18next';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
-const Transaction = ({ email }) => {
+const Transaction = () => {
 
     const [transactions , setTtransaction ] = useState(null);
     const [pagesNumber , setPagesNumber] = useState(0);
@@ -18,8 +19,7 @@ const Transaction = ({ email }) => {
     const [isFiltered, setIsFiltered] = useState(false);
     const [filterRequest, setFilterRequest] = useState(0);
     const { t } = useTranslation();
-
-    
+    const [isLoading, setIsLoading] = useState(false);   
 
     const TodayDate = new Date();
 
@@ -28,18 +28,17 @@ const Transaction = ({ email }) => {
 
     const last30Days = new Date(TodayDate);
     last30Days.setDate(TodayDate.getDate() - 30);
-    
-    console.log(filterData);
-    
+      
 
     useEffect(() => {
 
         async function getTransaction() {
             try {
+                setIsLoading(true);
                 const response = await apiFetch(
                     isFiltered
-                        ? `https://localhost:7194/api/Transfers/Customer/filtred`
-                        : `https://localhost:7194/api/Transfers/Customer/${selectedPage}`,
+                        ? `https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/Transfers/Customer/filtred`
+                        : `https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/Transfers/Customer/${selectedPage}`,
                     isFiltered
                         ? {
                             method: 'POST',
@@ -60,26 +59,28 @@ const Transaction = ({ email }) => {
                                 'Content-Type': 'application/json'
                             }
                         }
-                , email);
+                , localStorage.getItem("Email"));
 
                 const data = await response.json() ; 
 
                 if(response.ok) 
                 {
-                    console.log(data);
                     setTtransaction(data);
-                    setPagesNumber(data?.pagesNumber)
+                    setPagesNumber(data?.pagesNumber);
+                    setIsLoading(false);
                 }
 
             } catch(err) {
                 console.log(err.message);
+                setIsLoading(false);
+
             }
         }
 
 
         getTransaction();
 
-        return () => { }
+        return () => { setIsLoading(false); }
         
     }, [selectedPage, isFiltered, filterRequest]);
 
@@ -196,10 +197,15 @@ const Transaction = ({ email }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {DisplayTransaction}
+                        {isLoading == false && DisplayTransaction}
                     </tbody>
                 </table>
             </div>
+
+            <div style={{display : "flex", alignItems : "center", justifyContent : "center", width : "100%"}}>
+                {isLoading && <DotLottieReact src="/Lotties/loading.lottie" loop autoplay style={{ width: "100px", height: "100px"}}/>}
+            </div>
+
 
             <div className={Style.TransFooter}>
 

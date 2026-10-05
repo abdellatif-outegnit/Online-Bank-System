@@ -23,7 +23,7 @@ const Withdraw = ({accounts}) =>
             cardInfo.cardNum !== "" && cardInfo.cvc !== "" && cardInfo.name !== "")
         {
             try {
-                const response = await apiFetch(`https://localhost:7194/api/Transfers/Withdraw`, {
+                const response = await apiFetch(`https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/Transfers/Withdraw`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

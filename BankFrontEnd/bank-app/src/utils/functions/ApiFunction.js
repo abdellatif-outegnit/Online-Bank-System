@@ -18,7 +18,7 @@ export async function apiFetch(url, options = {}, Email) {
         const refreshToken = localStorage.getItem("RefreshToken");
 
         const refreshResponse = await fetch(
-            "https://localhost:7194/api/Auth/refresh",
+            "https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/Auth/refresh",
             {
                 method: "POST",
                 headers: {

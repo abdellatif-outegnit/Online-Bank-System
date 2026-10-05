@@ -19,7 +19,7 @@ export default function Authentication()
     const {
         register,
         handleSubmit,
-        watch,
+        setValue,
         formState: { errors },
     } = useForm()
 
@@ -30,7 +30,7 @@ export default function Authentication()
         setIsLoading(true);
 
         try {
-            var postData = await fetch("https://localhost:7194/api/Auth/login", {
+            var postData = await fetch("https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/Auth/login", {
                 method : "post",
                 headers: {
                     "Content-Type": "application/json"
@@ -61,6 +61,11 @@ export default function Authentication()
         }
     }
 
+    const handelDemo = () => {
+        setValue("EmailRequired", "koko@gmail.com");
+        setValue("passwordRequired", "Koko48128288@");
+    };
+
     return (
         <>
             <section className={Style.Auth}>
@@ -71,7 +76,7 @@ export default function Authentication()
                         <legend>{t("AuthTitle3")}</legend>
                         <div>
                             <img src={userAuth} alt="userIcon" />
-                            <input type="text" placeholder={t("AuthEmailPlaceholder")}  {...register("EmailRequired", { required: true, pattern: {
+                            <input type="text" name="email" placeholder={t("AuthEmailPlaceholder")}  {...register("EmailRequired", { required: true, pattern: {
                                 value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
                                 message: t("AuthErrorEmailFormat")
                             } })}/>
@@ -83,7 +88,7 @@ export default function Authentication()
 
                         <div>
                             <img src={passwordAuth} alt="passwordIcon" />
-                            <input type={!ShowPassword ? "password" : "text"} placeholder={t("AuthPasswordPlaceholder")}  {...register("passwordRequired", { required: true })}/>
+                            <input name="password" type={!ShowPassword ? "password" : "text"} placeholder={t("AuthPasswordPlaceholder")}  {...register("passwordRequired", { required: true })}/>
                             <span className={Style.Eye} onClick={() => SetShowPassword(!ShowPassword) }>
                                 {!ShowPassword ? <EyeClosed color="rgb(14, 51, 38)"/> : <Eye color="rgb(14, 51, 38)"/> }
                             </span>
@@ -99,6 +104,10 @@ export default function Authentication()
                 </form>
                 {error && <p className={Style.errorMsg}>{error}</p>}
                 <p>{t("AuthLittlePara")} AbdoBank ? <Link to="/register"><span>{t("HeaderSignup")}</span></Link></p>
+
+                <div className={Style.Demo} onClick={handelDemo}>
+                    <p>DEMO</p>            
+                </div>
             </section>
             
         </>

@@ -27,7 +27,7 @@ const Register = () => {
     const onSubmit = async (data) => {
         try {
             setIsLoading(true);
-            const regData = await fetch("https://localhost:7194/api/Auth/register", {
+            const regData = await fetch("https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/Auth/register", {
                     method : "post",
                     headers: {
                         "Content-Type": "application/json"

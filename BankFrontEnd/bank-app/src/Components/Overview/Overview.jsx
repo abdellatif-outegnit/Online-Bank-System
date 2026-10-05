@@ -17,7 +17,7 @@ const Overview = () => {
 
         async function GetAccountsTransaction() {
             try {
-                const response = await apiFetch(`https://localhost:7194/api/Transfers/All`, {
+                const response = await apiFetch(`https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/Transfers/All`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

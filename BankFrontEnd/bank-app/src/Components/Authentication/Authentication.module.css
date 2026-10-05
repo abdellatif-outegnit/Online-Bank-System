@@ -1,3 +1,10 @@
+section.Auth {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 section.Auth p {
     padding: 10px 20px;
     color: var(--smallpara-color);
@@ -100,4 +107,27 @@ section.Auth .Eye {
 section.Auth .errorMsg {
     color: red;
     text-align: center;
+}
+
+.Demo {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100%;
+    margin-top: 20px;
+    background-color: rgba(0, 128, 0, 0.726);
+    cursor: pointer;
+    transition: .4s ease;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.45);
+}
+
+.Demo p {
+    color: white !important;
+    font-weight: 700;
+}
+
+.Demo:hover {
+    background-color: green;
 }

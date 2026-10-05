@@ -39,7 +39,7 @@ section.Top {
 }
 
 @starting-style {
-  :open::picker(.Top select) {
+  .Top select:open::picker(select) {
     opacity: 0;
   }
 }

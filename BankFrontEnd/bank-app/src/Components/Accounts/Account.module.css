@@ -230,4 +230,11 @@
     height: 200px;
 }
 
+.AccountListTwo 
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 

@@ -9,39 +9,43 @@ import { apiFetch } from '../../utils/functions/ApiFunction';
 import { useTranslation } from 'react-i18next';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
-const MyCard = ({customerId, email}) => {
+const MyCard = ({customerId}) => {
 
     const [cards, setCards] = useState(null);
     const [accounts, setAccounts] = useState(null);
     const [selectedCard, setSelectedCard] = useState(null);
     const [addCardStatus, setAddCardStatus] = useState(false);
     const [Msg , setMsg] = useState({type : null, msg : null});
+    const [isLoading, setIsLoading] = useState(false);
     const { t } = useTranslation();
 
     useEffect(() => {
        
         const fetchCards = async () => {
+            setIsLoading(true);
             try {
-                const response = await apiFetch(`https://localhost:7194/api/Cards/${customerId}`, {
+                const response = await apiFetch(`https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/Cards/${customerId}`, {
                  method: 'GET',
                 headers: { 
-                    'Content-Type': 'application/json' } }, email);
+                    'Content-Type': 'application/json' } }, localStorage.getItem("Email"));
 
                 if(response.ok) 
                 {
                     const data = await response.json();
-                    setCards(data);    
+                    setCards(data);
+                    setIsLoading(false);    
                 }
 
             } catch (error) {
                 console.error('Error fetching cards:', error);
+                setIsLoading(false); 
             }
         };
 
         fetchCards();
 
         return () => {
-
+            setIsLoading(false); 
         }
 
     }, []);
@@ -53,12 +57,12 @@ const MyCard = ({customerId, email}) => {
             let isMounted = true;
 
             try {
-                const response = await apiFetch(`https://localhost:7194/api/Accounts/${customerId}`, {
+                const response = await apiFetch(`https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/Accounts/${customerId}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
                     }
-                }, email);
+                }, localStorage.getItem("Email"));
     
                 
                 if(response.ok)
@@ -115,12 +119,12 @@ const MyCard = ({customerId, email}) => {
     const FreezeCard = async () => {
 
         try {
-            const response = await apiFetch(`https://localhost:7194/api/Cards/Freeze/${selectedCard?.cardID}`, {
+            const response = await apiFetch(`https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/Cards/Freeze/${selectedCard?.cardID}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 }
-            }, email);
+            }, localStorage.getItem("Email"));
 
             if(response.ok)
             {
@@ -152,7 +156,7 @@ const MyCard = ({customerId, email}) => {
                         <p>{t('Cards.back')}</p>
                     </div>
                 </div>
-                <AddCard accounts={accounts} email={email}/>
+                <AddCard accounts={accounts}/>
             </section>
         ) : (
             <section className={Style.myCard}>
@@ -167,11 +171,17 @@ const MyCard = ({customerId, email}) => {
                     </div>
                 </div>
                 <div className={Style.CardContainer}>
-                    {cards?.length >= 1 ?  DisplayCards : (<div className={Style.LottieContainer}>
-                            <DotLottieReact className={Style.Lottie} src="/Lotties/add.lottie" loop autoplay  /> 
-                            <p>{t("Cards.addCard")}</p>   
-                        </div>)}
-                </div>
+                    {isLoading ? 
+                        <DotLottieReact src="/Lotties/loading.lottie" loop autoplay style={{ width: "100px", height: "100px" }}/>
+                    :
+                    cards?.length >= 1 ?  DisplayCards 
+                    :
+                        (<div className={Style.LottieContainer}>
+                                <DotLottieReact className={Style.Lottie} src="/Lotties/add.lottie" loop autoplay  /> 
+                                <p>{t("Cards.addCard")}</p>   
+                        </div>)
+                    }
+               </div>
                 <div className={Style.SelectedCardContainer}>
                     <h3>{t('Cards.selected')}</h3>
                     <p>{t('Cards.details')}</p>

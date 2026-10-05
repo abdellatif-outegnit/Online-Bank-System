@@ -48,7 +48,7 @@ const EditProfile = ({ profile, setProfile, onClose }) => {
 
         try {
 
-            const Data = await apiFetch("https://localhost:7194/api/User/updateProfile", {
+            const Data = await apiFetch("https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/User/updateProfile", {
                     method : "post",
                     headers: {
                         "Content-Type": "application/json",

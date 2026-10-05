@@ -38,7 +38,7 @@ const Transfer = ({accounts, setAccounts}) => {
         {
             try
             {
-                const response = await apiFetch(`https://localhost:7194/api/Transfers`, {
+                const response = await apiFetch(`https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/Transfers`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

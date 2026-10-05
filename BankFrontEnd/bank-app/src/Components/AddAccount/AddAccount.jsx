@@ -5,7 +5,7 @@ import { apiFetch } from '../../utils/functions/ApiFunction';
 import { useTranslation } from 'react-i18next';
 
 
-const AddAccount = ({Email}) => {
+const AddAccount = () => {
     const [AccountType, setAccountType] = useState(null);
     const [customError, setcustomError] = useState({status : false, msg: ""});
     const [response, setResponse] = useState({status : false, msg: ""});
@@ -24,7 +24,7 @@ const AddAccount = ({Email}) => {
             setcustomError({status : false, msg : ""});
 
          try {
-            const response = await apiFetch(`https://localhost:7194/api/Accounts/Add`,
+            const response = await apiFetch(`https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/Accounts/Add`,
                 {      
                     method: 'POST',
                     headers: {
@@ -32,7 +32,7 @@ const AddAccount = ({Email}) => {
                     },
                     body: AccountType == "Checking" ? 0 : 1
                 },
-                Email 
+                localStorage.getItem("Email")
             );
 
             const data = await response.text() ; 

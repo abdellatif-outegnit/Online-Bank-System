@@ -19,16 +19,21 @@ const Account = ({ UserInfo }) => {
     const [addStatus, setAddStatus] = useState(false);
 
     const [ActionBtn, setActionBtn] = useState("Transfer");
+
+    const [isLoading, setIsLoading] = useState(false);
+
     const { t } = useTranslation();
 
     useEffect(() =>{
+
+        setIsLoading(true);
 
         let isMounted = true;
 
         async function GetAccounts() {
 
             try {
-                const response = await apiFetch(`https://localhost:7194/api/Accounts/${UserInfo?.customerID}`, {
+                const response = await apiFetch(`https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/Accounts/${UserInfo?.customerID}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
@@ -42,11 +47,13 @@ const Account = ({ UserInfo }) => {
     
                     if (isMounted) {
                         setAccounts(data);
+                        setIsLoading(false);
                     }
                 }
 
             } catch (error) {
                 console.error('Error fetching accounts:', error);
+                setIsLoading(false);
             }
         }
 
@@ -54,6 +61,7 @@ const Account = ({ UserInfo }) => {
 
         return () => {
             isMounted = false;
+            setIsLoading(false);
         };
 
     }, []);
@@ -65,7 +73,7 @@ const Account = ({ UserInfo }) => {
         async function GetAccountsTransaction() {
 
             try {
-                const response = await apiFetch(`https://localhost:7194/api/Transfers/All`, {
+                const response = await apiFetch(`https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/Transfers/All`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -183,7 +191,7 @@ const Account = ({ UserInfo }) => {
                     </div>
 
                     <div className={Style.AccountList}>
-                        <AddAccount Email={UserInfo?.emailAddress}/>
+                        <AddAccount />
                     </div>
                 </section>
             ) : (
@@ -199,8 +207,11 @@ const Account = ({ UserInfo }) => {
                         </div>
                     </div>
                     
-                    <div className={`${accounts.length >= 1 ? Style.AccountList : ""}`}>
-                        {accountList}
+                    <div className={`${accounts.length >= 1 ? Style.AccountList : Style.AccountListTwo}`}>
+                        {isLoading ? 
+                         <DotLottieReact src="/Lotties/loading.lottie" loop autoplay style={{ width: "100px", height: "100px" }}/>
+                            : accountList
+                        }
                     </div>
 
                     <div className={Style.ActionContainer}>

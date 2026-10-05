@@ -136,7 +136,7 @@ const Setting = ({UserInfo, setUserInfo}) => {
                     <div className={Style.SignoutBTN} onClick={async () => {
                         try {
 
-                            const response = await fetch('https://localhost:7194/api/Auth/logout', {
+                            const response = await fetch('https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/Auth/logout', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
@@ -146,6 +146,9 @@ const Setting = ({UserInfo, setUserInfo}) => {
                                             refreshToken : localStorage.getItem("RefreshToken")
                                         })
                             });
+                            localStorage.removeItem("AccessToken");
+                            localStorage.removeItem("RefreshToken");
+                            localStorage.removeItem("Email");
 
                             if(response.ok)
                                 nav("/login")
@@ -170,7 +173,7 @@ const Setting = ({UserInfo, setUserInfo}) => {
             />
         )}
         {isPasswordOpen && (
-                    <EditPassword onClose={() => setIsPasswordOpen(false)} email={UserInfo?.emailAddress} />
+            <EditPassword onClose={() => setIsPasswordOpen(false)} />
         )}
         </>
     )

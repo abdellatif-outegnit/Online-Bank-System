@@ -12,6 +12,7 @@ import Money from "../../Assets/money-100.png";
 import Robot from "../../Assets/greenRobotCom.png";
 import {apiFetch} from "../../utils/functions/ApiFunction";
 import { useTranslation } from 'react-i18next';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 const Dashboard = () => {
 
@@ -20,6 +21,7 @@ const Dashboard = () => {
     const [activeIcon, setActiveIcon] = useState("All");
     const [recentTrans, setRecentTrans] = useState(null);
     const { t } = useTranslation();
+    const [isLoading, setIsLoading] = useState(false);   
 
     const menuItems = [
         { name: 'overview', icon: PanelsTopLeft, label: t('Dashboard.overview') },
@@ -33,7 +35,7 @@ const Dashboard = () => {
     useEffect(() => {
         async function GetUser() {
 
-            const response = await apiFetch('https://localhost:7194/api/user/me', {
+            const response = await apiFetch('https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/user/me', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -58,7 +60,8 @@ const Dashboard = () => {
 
         async function getTransaction() {
             try {
-                const response = await apiFetch(`https://localhost:7194/api/Transfers/Customer/filtred`,
+                setIsLoading(true)
+                const response = await apiFetch(`https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/Transfers/Customer/filtred`,
                     {      
                         method: 'POST',
                         headers: {
@@ -75,17 +78,19 @@ const Dashboard = () => {
                 if(response.ok) 
                 {
                     setRecentTrans(data);
+                    setIsLoading(false)
                 }
 
             } catch(err) {
                 console.log(err.message);
+                setIsLoading(false)
             }
         }
 
 
         getTransaction();
 
-        return () => { }
+        return () => { setIsLoading(false) }
         
     }, []);
     
@@ -105,7 +110,8 @@ const Dashboard = () => {
         }
   
         try {
-            const response = await apiFetch(`https://localhost:7194/api/Transfers/Customer/filtred`,
+             setIsLoading(true);
+            const response = await apiFetch(`https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/Transfers/Customer/filtred`,
                 {      
                     method: 'POST',
                     headers: {
@@ -123,11 +129,13 @@ const Dashboard = () => {
             if(response.ok) 
             {
                 setRecentTrans(data);
+                setIsLoading(false);
             } 
 
 
         } catch(err) {
             console.log(err.message);
+            setIsLoading(false);
         }
     }
 
@@ -180,8 +188,8 @@ const Dashboard = () => {
                 <div className={Style.Content}>
                     {activeMenu === 'overview' && <Overview />}
                     {activeMenu === 'accounts' && <Account UserInfo={user} />}
-                    {activeMenu === 'cards' && <MyCard customerId={user?.customerID} email={user?.emailAddress} />}
-                    {activeMenu === 'transactions' && <Transaction email={user?.emailAddress}/>}
+                    {activeMenu === 'cards' && <MyCard customerId={user?.customerID} />}
+                    {activeMenu === 'transactions' && <Transaction />}
                     {activeMenu === 'settings' && <Setting UserInfo={user} setUserInfo={setUser}/>}
                 </div>
 
@@ -210,10 +218,19 @@ const Dashboard = () => {
 
                             <div className={Style.displayTransactions}>
                                 <h3>{t('Dashboard.recentActivity')}</h3>
-                                {displayRecentTransaction}
+                                
+                                    {isLoading == false &&
+                                        displayRecentTransaction}
+                                
                             </div>
+                            <div style={{display : "flex", alignItems : "center", justifyContent : "center", width : "100%"}}>
+                                {isLoading && <DotLottieReact src="/Lotties/loading.lottie" loop autoplay style={{ width: "100px", height: "100px"}}/>}
+                            </div>
+
                         </div>
+
                     </div>
+
                 </div>
             </section>
         </>

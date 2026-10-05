@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 import { apiFetch } from "../../utils/functions/ApiFunction";
 import { useTranslation } from 'react-i18next';
 
-const EditPassword = ({ onClose, email }) => {
+const EditPassword = ({ onClose }) => {
      const {
     register,
     handleSubmit,
@@ -31,7 +31,7 @@ const EditPassword = ({ onClose, email }) => {
   
         try {
 
-            const Data = await apiFetch("https://localhost:7194/api/User/changePassword", {
+            const Data = await apiFetch("https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/User/changePassword", {
                     method : "post",
                     headers: {
                         "Content-Type": "application/json",
@@ -40,7 +40,7 @@ const EditPassword = ({ onClose, email }) => {
                         currPassword: data.OldPasswordRequired,
                         newPassword: data.NewPasswordRequired
                     })
-                }, email)
+                }, localStorage.getItem("Email"))
 
             if(Data.ok)
             {

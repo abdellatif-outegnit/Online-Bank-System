@@ -7,7 +7,7 @@ import { CreditCard } from 'lucide-react';
 import { apiFetch } from '../../utils/functions/ApiFunction';
 
 
-const AddCard = ({ accounts, email }) => {
+const AddCard = ({ accounts }) => {
 
     const [myAccountId, setMyAccountId] = useState({"Account Number" : null});
     const [CardType, setCardType] = useState(null);
@@ -32,7 +32,7 @@ const AddCard = ({ accounts, email }) => {
         }
 
         try {
-            const response = await apiFetch(`https://localhost:7194/api/Cards/Add`,
+            const response = await apiFetch(`https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/Cards/Add`,
                 {      
                     method: 'POST',
                     headers: {
@@ -45,7 +45,7 @@ const AddCard = ({ accounts, email }) => {
                             cardBrand: selectedBrand == "Visa" ? 0 : selectedBrand == "Mastercard" ? 1 : null
                         }
                     )
-                }, email
+                }, localStorage.getItem("Email")
             );
 
             const data = await response.text() ; 
