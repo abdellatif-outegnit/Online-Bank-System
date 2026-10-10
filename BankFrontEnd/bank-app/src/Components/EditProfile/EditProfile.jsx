@@ -5,25 +5,26 @@ import { useForm } from "react-hook-form";
 import flag from "../../assets/morocco2.svg";
 import { apiFetch } from "../../utils/functions/ApiFunction";
 import { useTranslation } from 'react-i18next';
+import { useUser } from "../../context/userContext";
 
-const EditProfile = ({ profile, setProfile, onClose }) => {
+const EditProfile = ({  onClose }) => {
+    const { user, setUser } = useUser();
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm({
         defaultValues: {
-            firstName: profile?.customer?.firstName ?? "",
-            lastName: profile?.customer?.lastName ?? "",
-            email: profile?.emailAddress ?? "",
-            phone: profile?.customer?.phoneNumber?.slice(4) ?? "",
+            firstName: user?.customer?.firstName ?? "",
+            lastName: user?.customer?.lastName ?? "",
+            email: user?.emailAddress ?? "",
+            phone: user?.customer?.phoneNumber?.slice(4) ?? "",
         },
     });
 
     const [CustomError, setCustomError] = useState({status :false, msg : ""});
     const [success , setSuccess] = useState({status :false, msg : ""});
     const { t } = useTranslation();
-
 
     useEffect(() => {
         const handleEscape = (event) => {
@@ -33,6 +34,10 @@ const EditProfile = ({ profile, setProfile, onClose }) => {
         document.addEventListener("keydown", handleEscape);
         return () => document.removeEventListener("keydown", handleEscape);
     }, [onClose]);
+
+    if (!user) {
+        return null;
+    }
 
     const onSubmit = async (data) => {
 
@@ -54,13 +59,13 @@ const EditProfile = ({ profile, setProfile, onClose }) => {
                         "Content-Type": "application/json",
                     },
                     body : JSON.stringify(profileData)
-                }, profile?.emailAddress)
+                }, user?.emailAddress)
 
             if(Data.ok)
             {
                 const dataResponse = await Data.text();
                 setSuccess({status : true, msg : dataResponse})
-                setProfile({...profile, emailAddress : profileData.email, customer : {...profile?.customer, firstName : profileData.firstName, lastName : profileData.lastName, phoneNumber : profileData.phoneNumber} })
+                setUser({...user, emailAddress : profileData.email, customer : {...user?.customer, firstName : profileData.firstName, lastName : profileData.lastName, phoneNumber : profileData.phoneNumber} })
             }
 
         }
@@ -86,19 +91,19 @@ const EditProfile = ({ profile, setProfile, onClose }) => {
                     <label>
                         {t('Settings.firstName')}
                         <input {...register("firstName", { required: "this field required", minLength: { value: 2, message: "min length is 2" } })}
-                        defaultValue={profile?.customer?.firstName} />
+                        defaultValue={user?.customer?.firstName} />
                     </label>
                     {errors?.firstName?.message && <p className={Style.error}>{errors.firstName.message}</p>}
                     <label>
                         {t('Settings.lastName')}
                         <input {...register("lastName", { required: "this field required", minLength: { value: 2, message: "min length is 2" } })}
-                        defaultValue={profile?.customer?.lastName} />
+                        defaultValue={user?.customer?.lastName} />
                     </label>
                     {errors?.lastName?.message && <p className={Style.error}>{errors.lastName.message}</p>}
                     <label>
                         {t('Settings.email')}
                         <input type="email" {...register("email", { required: "this field required", pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "enter a valid email" } })}
-                        defaultValue={profile?.emailAddress} />
+                        defaultValue={user?.emailAddress} />
                     </label>
                     {errors?.email?.message && <p className={Style.error}>{errors.email.message}</p>}
                     <label>
@@ -107,7 +112,7 @@ const EditProfile = ({ profile, setProfile, onClose }) => {
                             <img src={flag} alt="moroccan flag" /><span>+212</span>
                             <input type="tel" {...register("phone", { required: "this field required", pattern: { value: /[\d]{9}$/, message: "enter a valid phone number" },
                                  maxLength : { value: 9, message: "max length is 9" } })}
-                                 defaultValue={profile?.customer?.phoneNumber?.slice(4)} />
+                                 defaultValue={user?.customer?.phoneNumber?.slice(4)} />
                         </div>
                     </label>
                     {errors?.phone?.message && <p className={Style.error}>{errors.phone.message}</p>}

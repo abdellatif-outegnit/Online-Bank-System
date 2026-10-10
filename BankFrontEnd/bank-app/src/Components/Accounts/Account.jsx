@@ -8,9 +8,12 @@ import Deposit from "../Deposit/Deposit";
 import Withdraw from "../Withdraw/Withdraw";
 import { useTranslation } from 'react-i18next';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { useUser } from "../../context/userContext";
 
 
-const Account = ({ UserInfo }) => {
+const Account = () => {
+
+    const { user } = useUser();
 
     const [accounts, setAccounts] = useState([]);
     
@@ -30,15 +33,21 @@ const Account = ({ UserInfo }) => {
 
         let isMounted = true;
 
+        if(!user)
+        {
+            setIsLoading(false);
+            return;
+        }
+
         async function GetAccounts() {
 
             try {
-                const response = await apiFetch(`https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/Accounts/${UserInfo?.customerID}`, {
+                const response = await apiFetch(`https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/Accounts/${user?.customerID}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
                     }
-                }, UserInfo?.emailAddress);
+                }, user?.emailAddress);
     
                 
                 if(response.ok)
@@ -64,11 +73,17 @@ const Account = ({ UserInfo }) => {
             setIsLoading(false);
         };
 
-    }, []);
+    }, [user]);
 
     useEffect(() =>{
 
-         let isMounted = true;
+        let isMounted = true;
+
+        if(!user)
+        {
+            isMounted = false;
+            return;
+        }
 
         async function GetAccountsTransaction() {
 
@@ -78,7 +93,7 @@ const Account = ({ UserInfo }) => {
                     headers: {
                         'Content-Type': 'application/json',
                     }
-                }, UserInfo?.emailAddress);
+                }, user?.emailAddress);
     
                 
                 if(response.ok)
@@ -101,7 +116,7 @@ const Account = ({ UserInfo }) => {
             isMounted = false;
         };
 
-    }, []);
+    }, [user]);
 
     let Transactions = transAccounts.map((trans) => {
 

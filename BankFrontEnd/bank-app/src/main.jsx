@@ -8,6 +8,7 @@ import Login from './Pages/Login/Login'
 import AuthHeader from "./Components/AuthHeader/AuthHeader"
 import Register from './Pages/Register/Register'
 import Dashboard from './Pages/Dashboard/Dashboard'
+import {UserProvider} from "./context/userContext"
 
 const requireAuth = () => {
   if (!localStorage.getItem("AccessToken")) {
@@ -35,5 +36,7 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById('root')).render(
-  <RouterProvider router={router} />,
+  <UserProvider>
+    <RouterProvider router={router} />
+  </UserProvider>
 )
