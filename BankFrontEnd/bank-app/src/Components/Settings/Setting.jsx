@@ -6,14 +6,21 @@ import EditProfile from "../EditProfile/EditProfile";
 import EditPassword from "../EditPassword/EditPassword";
 import { useNavigate } from "react-router";
 import { useTranslation } from 'react-i18next';
+import { useUser } from "../../context/userContext";
 
-const Setting = ({UserInfo, setUserInfo}) => {
+const Setting = () => {
 
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [isPasswordOpen, setIsPasswordOpen] = useState(false);
     const { t } = useTranslation();
+
+    const { user } = useUser();
  
     const nav = useNavigate();
+
+    if (!user) {
+        return null;
+    }
 
     return (
         <>
@@ -51,8 +58,8 @@ const Setting = ({UserInfo, setUserInfo}) => {
                             <img src={Money} alt="UserAvatar" />
                         </div>
                         <div className={Style.ProfileHeaderInfo}>
-                            <h3>{UserInfo?.customer?.firstName} {UserInfo?.customer?.lastName}</h3>
-                            <p>{UserInfo?.role?.roleName}</p>
+                            <h3>{user?.customer?.firstName} {user?.customer?.lastName}</h3>
+                            <p>{user?.role?.roleName}</p>
                         </div>
                     </div>
                     <div className={Style.ProfileFooter}>
@@ -61,7 +68,7 @@ const Setting = ({UserInfo, setUserInfo}) => {
                                 <UserRound size={20} />
                                 <p>{t('Settings.firstName')}</p>
                             </div>
-                            <p>{UserInfo?.customer?.firstName}</p>
+                            <p>{user?.customer?.firstName}</p>
                         </div>
 
                         <div className={Style.ProfileTable}>
@@ -69,7 +76,7 @@ const Setting = ({UserInfo, setUserInfo}) => {
                                 <UserRound size={20} />
                                 <p>{t('Settings.lastName')}</p>
                             </div>
-                            <p>{UserInfo?.customer?.lastName}</p>
+                            <p>{user?.customer?.lastName}</p>
                         </div>
 
                         <div className={Style.ProfileTable}>
@@ -77,7 +84,7 @@ const Setting = ({UserInfo, setUserInfo}) => {
                                 <Mail size={20} />
                                 <p>{t('Settings.email')}</p>
                             </div>
-                            <p>{UserInfo?.emailAddress}</p>
+                            <p>{user?.emailAddress}</p>
                         </div>
 
                         <div className={Style.ProfileTable}>
@@ -85,7 +92,7 @@ const Setting = ({UserInfo, setUserInfo}) => {
                                 <PhoneCall size={20} />
                                 <p>{t('Settings.phone')}</p>
                             </div>
-                            <p>{UserInfo?.customer?.phoneNumber}</p>
+                            <p>{user?.customer?.phoneNumber}</p>
                         </div>
 
                     </div>
@@ -142,7 +149,7 @@ const Setting = ({UserInfo, setUserInfo}) => {
                                     'Content-Type': 'application/json'
                                 },
                                 body : JSON.stringify({
-                                            email : UserInfo?.emailAddress,
+                                            email : user?.emailAddress,
                                             refreshToken : localStorage.getItem("RefreshToken")
                                         })
                             });
@@ -167,14 +174,13 @@ const Setting = ({UserInfo, setUserInfo}) => {
         </section>
         {isProfileOpen && (
             <EditProfile
-                profile={UserInfo}
-                setProfile={setUserInfo}
                 onClose={() => setIsProfileOpen(false)}
             />
         )}
         {isPasswordOpen && (
             <EditPassword onClose={() => setIsPasswordOpen(false)} />
         )}
+        
         </>
     )
 }

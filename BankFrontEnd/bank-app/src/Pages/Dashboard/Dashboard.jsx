@@ -13,11 +13,11 @@ import Robot from "../../Assets/greenRobotCom.png";
 import {apiFetch} from "../../utils/functions/ApiFunction";
 import { useTranslation } from 'react-i18next';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { useUser } from '../../context/userContext';
 
 const Dashboard = () => {
 
     const [activeMenu, setActiveMenu] = useState('overview');
-    const [user, setUser] = useState(null);
     const [activeIcon, setActiveIcon] = useState("All");
     const [recentTrans, setRecentTrans] = useState(null);
     const { t } = useTranslation();
@@ -31,32 +31,10 @@ const Dashboard = () => {
         { name: 'settings', icon: Cog, label: t('Dashboard.settings') },
     ];
 
-
-    useEffect(() => {
-        async function GetUser() {
-
-            const response = await apiFetch('https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/user/me', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            }, localStorage.getItem("Email"));
-
-            const userData = await response.json();
-
-            if (response.ok) {
-                setUser(userData?.userResponseDTO);
-            }
-        }
-
-        GetUser();
-
-        return () => {}
-
-    }, []);
-
+    const { user } = useUser();
     
     useEffect(() => {
+        if (!user?.emailAddress) return;
 
         async function getTransaction() {
             try {
@@ -92,7 +70,7 @@ const Dashboard = () => {
 
         return () => { setIsLoading(false) }
         
-    }, []);
+    }, [user?.emailAddress]);
     
 
     const transactionTypes = {
@@ -102,6 +80,8 @@ const Dashboard = () => {
 
     async function GetFiltredTransaction(transType = null) 
     {
+        if (!user?.emailAddress) return;
+
         const GettransactionType = [];
 
         if(transType != null)
@@ -187,10 +167,10 @@ const Dashboard = () => {
 
                 <div className={Style.Content}>
                     {activeMenu === 'overview' && <Overview />}
-                    {activeMenu === 'accounts' && <Account UserInfo={user} />}
+                    {activeMenu === 'accounts' && <Account />}
                     {activeMenu === 'cards' && <MyCard customerId={user?.customerID} />}
                     {activeMenu === 'transactions' && <Transaction />}
-                    {activeMenu === 'settings' && <Setting UserInfo={user} setUserInfo={setUser}/>}
+                    {activeMenu === 'settings' && <Setting />}
                 </div>
 
                 <div>
