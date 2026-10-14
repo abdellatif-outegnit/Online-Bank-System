@@ -33,6 +33,7 @@
     "AuthPasswordPlaceholder" : "Password",
     "AuthButtonLogin" : "LOG IN",
     "AuthLittlePara" : "New to",
+    "AuthErrorProfileLoad" : "Login succeeded, but your profile could not be loaded. Please try again.",
     "AuthErrorRequired" : "This field is required",
     "AuthErrorEmailFormat" : "Invalid email format",
     "AuthErrorPasswordMin" : "Minimum 8 characters",

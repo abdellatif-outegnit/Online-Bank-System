@@ -32,6 +32,7 @@
     "AuthPasswordPlaceholder" : "Mot de passe",
     "AuthButtonLogin" : "SE CONNECTER",
     "AuthLittlePara" : "Nouveau sur",
+    "AuthErrorProfileLoad" : "Connexion réussie, mais impossible de charger votre profil. Réessayez.",
     "AuthErrorRequired" : "Ce champ est requis",
     "AuthErrorEmailFormat" : "Format d'e-mail invalide",
     "AuthErrorPasswordMin" : "Minimum 8 caractères",

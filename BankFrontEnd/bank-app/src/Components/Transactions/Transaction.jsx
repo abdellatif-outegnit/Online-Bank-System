@@ -107,6 +107,10 @@ const Transaction = () => {
         dispatch({ type: 'FLITER_REQUEST' });
     }
 
+    function handelIndecator(pageNumber) {
+        dispatch({ type: 'SET_PAGE', page: pageNumber });
+    }
+
     const AccountTypes = {
         0 : "Checking account",
         1 : "Saving account",
@@ -196,17 +200,18 @@ const Transaction = () => {
 
             <div className={Style.TransFooter}>
 
-                <button disabled={state.selectedPage <= 1}  className={Style.BtnPre} onClick={PrevButton}>{t('Transactions.previous')}</button>
+                <button data-testid="previous-button" disabled={state.selectedPage <= 1}  className={Style.BtnPre} onClick={PrevButton}>{t('Transactions.previous')}</button>
 
                 <div className={Style.PageNumbers}>
                     {Array.from({ length: state.pagesNumber }, (_, index) => (
-                        <button key={index + 1} className={`${Style.PageNumber} ${state.selectedPage == (index + 1) ?  Style.Active : ""}`}>
+                        <button key={index + 1} data-testid={state.selectedPage == index + 1 ? "page-indicator" : undefined} className={`${Style.PageNumber} ${state.selectedPage == (index + 1) ?  Style.Active : ""}`}
+                        onClick ={() => handelIndecator(index + 1)}>
                             {index + 1}
                         </button>
                     ))}
                 </div>
 
-                <button disabled={state.selectedPage >= state.pagesNumber} className={Style.BtnNext} onClick={NextButton}>{t('Transactions.next')}</button>
+                <button data-testid="next-button" disabled={state.selectedPage >= state.pagesNumber} className={Style.BtnNext} onClick={NextButton}>{t('Transactions.next')}</button>
 
             </div>
 

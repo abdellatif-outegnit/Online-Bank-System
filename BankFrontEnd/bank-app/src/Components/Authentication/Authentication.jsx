@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from "react-router";
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { useUser } from "../../context/userContext";
 
 
 
@@ -24,6 +25,7 @@ export default function Authentication()
     } = useForm()
 
     const nav = useNavigate()
+    const { refreshUser } = useUser();
 
     const onSubmit = async (data) => {
 
@@ -47,6 +49,15 @@ export default function Authentication()
                 localStorage.setItem("AccessToken", dataResponse.accessToken);
                 localStorage.setItem("RefreshToken", dataResponse.refreshToken);
                 localStorage.setItem("Email", dataResponse.email);
+
+                const user = await refreshUser();
+                
+                if (!user) {
+                    setError(t("AuthErrorProfileLoad"));
+                    setIsLoading(false);
+                    return;
+                }
+
                 nav("/dashboard");
             } 
             else if (!postData.ok) {
@@ -57,7 +68,8 @@ export default function Authentication()
         }
         catch(e) {
             setIsLoading(false);
-            console.log("error occurs " + e);
+            console.error("Login failed:", e);
+            setError(t("AuthErrorProfileLoad"));
         }
     }
 

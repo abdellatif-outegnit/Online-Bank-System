@@ -8,8 +8,9 @@ import AddCard from '../AddCards/AddCard';
 import { apiFetch } from '../../utils/functions/ApiFunction';
 import { useTranslation } from 'react-i18next';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { useUser } from '../../context/userContext';
 
-const MyCard = ({customerId}) => {
+const MyCard = () => {
 
     const [cards, setCards] = useState(null);
     const [accounts, setAccounts] = useState(null);
@@ -19,12 +20,17 @@ const MyCard = ({customerId}) => {
     const [isLoading, setIsLoading] = useState(false);
     const { t } = useTranslation();
 
+    const { user } = useUser();
+
+ 
+
     useEffect(() => {
        
         const fetchCards = async () => {
+            if(!user?.customerID) return;
             setIsLoading(true);
             try {
-                const response = await apiFetch(`https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/Cards/${customerId}`, {
+                const response = await apiFetch(`https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/Cards/${user?.customerID}`, {
                  method: 'GET',
                 headers: { 
                     'Content-Type': 'application/json' } }, localStorage.getItem("Email"));
@@ -48,16 +54,18 @@ const MyCard = ({customerId}) => {
             setIsLoading(false); 
         }
 
-    }, []);
+    }, [user?.customerID]);
 
     useEffect(() => {
 
         async function GetAccounts() {
+            
+            if(!user) return;
 
             let isMounted = true;
 
             try {
-                const response = await apiFetch(`https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/Accounts/${customerId}`, {
+                const response = await apiFetch(`https://abdobank-frg0gterdjetfzct.southafricanorth-01.azurewebsites.net/api/Accounts/${user?.customerID}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
@@ -85,7 +93,7 @@ const MyCard = ({customerId}) => {
 
         GetAccounts();
 
-    }, []);
+    }, [user?.customerID]);
 
     // const accountsWithoutCards = accounts?.filter(
     //     account => !cards?.some(

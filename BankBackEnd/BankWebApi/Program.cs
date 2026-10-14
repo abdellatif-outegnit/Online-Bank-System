@@ -21,7 +21,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("https://inquisitive-faloodeh-e9ae55.netlify.app")
+        policy.WithOrigins("https://inquisitive-faloodeh-e9ae55.netlify.app", "http://localhost:5173")
               .AllowAnyHeader()
               .AllowAnyMethod();
         // .AllowCredentials(); // only if you're sending cookies/auth headers cross-origin

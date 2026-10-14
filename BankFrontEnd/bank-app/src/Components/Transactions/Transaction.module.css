@@ -118,6 +118,7 @@ td {
     background-color: rgba(128, 128, 128, 0.433);
     border-radius: 5px;
     font-weight: 600;
+    cursor: pointer; 
 }
 
 .Active {

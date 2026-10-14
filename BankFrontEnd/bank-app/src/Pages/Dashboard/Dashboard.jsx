@@ -31,8 +31,12 @@ const Dashboard = () => {
         { name: 'settings', icon: Cog, label: t('Dashboard.settings') },
     ];
 
+
+
     const { user } = useUser();
     
+     
+
     useEffect(() => {
         if (!user?.emailAddress) return;
 
@@ -168,7 +172,7 @@ const Dashboard = () => {
                 <div className={Style.Content}>
                     {activeMenu === 'overview' && <Overview />}
                     {activeMenu === 'accounts' && <Account />}
-                    {activeMenu === 'cards' && <MyCard customerId={user?.customerID} />}
+                    {activeMenu === 'cards' && <MyCard />}
                     {activeMenu === 'transactions' && <Transaction />}
                     {activeMenu === 'settings' && <Setting />}
                 </div>
