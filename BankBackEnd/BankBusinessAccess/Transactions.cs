@@ -279,7 +279,6 @@ namespace BankBusinessAccess
 
                     if (account._AccountsDTO.AccountBalance < amount)
                     {
-                        transaction.Rollback();
                         throw new ArgumentException("withdraw amount is greater than account balance.");
                     }
 

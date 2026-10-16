@@ -94,7 +94,6 @@ namespace BankWebApi.Controllers
         }
 
 
-    
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
