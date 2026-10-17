@@ -17,7 +17,7 @@ SET IDENTITY_INSERT Addresses OFF;
 
 SET IDENTITY_INSERT Customers ON;
 
-insert into Customers (CustomerID, FirstName, LastName, BirthDate, Status, PhoneNumber, AddressID, CreatedAt, UpdatedAt)
+insert into Customers (CustomerID, FirstName, LastName, BirthDate, Status, PhoneNumber, AddressID, CreatedAt, UpdatedAt, NationalID)
 values(3015, 'test', 'test', GETDATE(), 1, '212662355488', 1012, GETDATE(), GETDATE(), 'TT1234')
 
 SET IDENTITY_INSERT Customers OFF;
