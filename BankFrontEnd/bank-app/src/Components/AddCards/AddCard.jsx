@@ -1,6 +1,6 @@
 import Style from './AddCard.module.css';
-import mastercard from "../../Assets/mastercardPNG.png";
-import visa from "../../Assets/visaPNG.png";
+import mastercard from "../../assets/mastercardPNG.png";
+import visa from "../../assets/visaPNG.png";
 import MyCustomSelect from "../CustomSelect/MyCustomSelect.jsx";
 import { useState } from 'react';
 import { CreditCard } from 'lucide-react';

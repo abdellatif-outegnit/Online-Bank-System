@@ -1,6 +1,6 @@
 import Style from "./Setting.module.css";
 import { Cog, PenLine, UserRound, Mail , PhoneCall , LockKeyhole, KeyRound, LogOut } from 'lucide-react';
-import Money from "../../Assets/money-100.png";
+import Money from "../../assets/money-100.png";
 import { useState } from "react";
 import EditProfile from "../EditProfile/EditProfile";
 import EditPassword from "../EditPassword/EditPassword";
