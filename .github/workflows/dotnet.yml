@@ -97,7 +97,7 @@ jobs:
 
     - name: Publish
       run: |
-        dotnet publish BankBackEnd/BankRestApi/BankRestApi.csproj \
+        dotnet publish BankBackEnd/BankWebApi/BankWebApi.csproj \
           --configuration Release \
           --output ./publish
 
