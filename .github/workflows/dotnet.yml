@@ -1,0 +1,110 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: .NET
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: "Y"
+          MSSQL_PID: Developer
+          MSSQL_SA_PASSWORD: "Ci_Test_Passw0rd!2026"
+        ports:
+          - 1433:1433
+
+    env:
+      MSSQL_SA_PASSWORD: "Ci_Test_Passw0rd!2026"
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: dotnet restore BankBackEnd/BankRestApi.sln
+    - name: Build
+      run: dotnet build BankBackEnd/BankRestApi.sln --no-restore
+# ************************ db ***************************
+    - name: Install sqlcmd
+      run: |
+          curl -fsSL https://packages.microsoft.com/keys/microsoft.asc |
+            sudo tee /etc/apt/trusted.gpg.d/microsoft.asc >/dev/null
+
+          curl -fsSL https://packages.microsoft.com/config/ubuntu/24.04/prod.list |
+            sudo tee /etc/apt/sources.list.d/mssql-release.list >/dev/null
+
+          sudo apt-get update
+          sudo ACCEPT_EULA=Y apt-get install -y mssql-tools18
+
+    - name: Wait for SQL Server
+      run: |
+          SQLCMD=/opt/mssql-tools18/bin/sqlcmd
+
+          for i in {1..30}; do
+            if "$SQLCMD" -S localhost,1433 \
+              -U sa -P "$MSSQL_SA_PASSWORD" -C \
+              -Q "SELECT 1" >/dev/null 2>&1; then
+              echo "SQL Server is ready"
+              exit 0
+            fi
+            sleep 2
+          done
+
+          echo "SQL Server did not become ready"
+          exit 1
+
+    - name: Create test database
+      run: |
+          /opt/mssql-tools18/bin/sqlcmd \
+            -S localhost,1433 \
+            -U sa -P "$MSSQL_SA_PASSWORD" -C -b \
+            -Q "CREATE DATABASE OnlineBankDb"
+
+    - name: Initialize database schema
+      run: |
+          /opt/mssql-tools18/bin/sqlcmd \
+            -S localhost,1433 \
+            -U sa -P "$MSSQL_SA_PASSWORD" \
+            -C -b -d OnlineBankDb \
+            -i scripts/BankTestDB.sql
+
+    - name: Insert test data
+      run: |
+          /opt/mssql-tools18/bin/sqlcmd \
+            -S localhost,1433 \
+            -U sa -P "$MSSQL_SA_PASSWORD" \
+            -C -b -d OnlineBankDb \
+            -i scripts/SeedTestData.sql        
+
+    # *************************************************  
+    
+    - name: Test
+      env:
+          DB_CONNECTION_STRING: "Server=localhost,1433;Database=OnlineBankDb;User Id=sa;Password=Ci_Test_Passw0rd!2026;Encrypt=True;TrustServerCertificate=True;"
+      run:  dotnet test BankBackEnd/BankRestApi.sln --no-build --verbosity normal
+
+
+    - name: Publish
+      run: |
+        dotnet publish BankBackEnd/BankWebApi/BankWebApi.csproj \
+          --configuration Release \
+          --output ./publish
+
+
+    - name: Deploy to Azure
+      uses: azure/webapps-deploy@v3
+      with:
+        app-name: ${{ vars.AZURE_WEBAPP_NAME }}
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: ./publish
