@@ -5,6 +5,7 @@ import { apiFetch } from "../../utils/functions/ApiFunction";
 import { useTranslation } from 'react-i18next';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { initialState, TransactionsReducer } from "../../reduces/transactionsReducres";
+import { StepForward , StepBack  } from 'lucide-react';
 
 const Transaction = () => {
 
@@ -108,8 +109,32 @@ const Transaction = () => {
     }
 
     function handelIndecator(pageNumber) {
+
+        if(pageNumber === '...' || pageNumber === state.selectedPage) {
+            return;
+        }
+
         dispatch({ type: 'SET_PAGE', page: pageNumber });
     }
+
+    const GetPagesFormat = () => {
+
+        if(state.pagesNumber <= 5) {
+            return Array.from({ length: state.pagesNumber }, (_, index) => index + 1);
+        }
+
+
+        if(state.selectedPage <= 3) {
+            return [1, 2, 3, 4, '...', state.pagesNumber];
+        }
+
+        if(state.selectedPage >= state.pagesNumber - 2) {
+            return [1, '...', state.pagesNumber - 3, state.pagesNumber - 2, state.pagesNumber - 1, state.pagesNumber];
+        }
+
+        return [1, '...', state.selectedPage - 1, state.selectedPage, state.selectedPage + 1, '...', state.pagesNumber];
+    }
+
 
     const AccountTypes = {
         0 : "Checking account",
@@ -200,18 +225,18 @@ const Transaction = () => {
 
             <div className={Style.TransFooter}>
 
-                <button data-testid="previous-button" disabled={state.selectedPage <= 1}  className={Style.BtnPre} onClick={PrevButton}>{t('Transactions.previous')}</button>
+                <button data-testid="previous-button" disabled={state.selectedPage <= 1}  className={Style.BtnPre} onClick={PrevButton}><StepBack /></button>
 
                 <div className={Style.PageNumbers}>
-                    {Array.from({ length: state.pagesNumber }, (_, index) => (
-                        <button key={index + 1} data-testid={state.selectedPage == index + 1 ? "page-indicator" : undefined} className={`${Style.PageNumber} ${state.selectedPage == (index + 1) ?  Style.Active : ""}`}
-                        onClick ={() => handelIndecator(index + 1)}>
-                            {index + 1}
+                    {GetPagesFormat().map((page, index) => (
+                        <button key={index} data-testid={state.selectedPage == page ? "page-indicator" : undefined} className={`${Style.PageNumber} ${state.selectedPage == page ?  Style.Active : ""}`}
+                        onClick ={() => handelIndecator(page)}>
+                            {page}
                         </button>
                     ))}
                 </div>
 
-                <button data-testid="next-button" disabled={state.selectedPage >= state.pagesNumber} className={Style.BtnNext} onClick={NextButton}>{t('Transactions.next')}</button>
+                <button data-testid="next-button" disabled={state.selectedPage >= state.pagesNumber} className={Style.BtnNext} onClick={NextButton}><StepForward /></button>
 
             </div>
 

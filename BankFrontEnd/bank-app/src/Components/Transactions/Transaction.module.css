@@ -70,6 +70,10 @@
 
 .BtnNext, .BtnPre {
     background-color: var(--border-secondary-color);
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .BtnNext:hover, .BtnPre:hover {
